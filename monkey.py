@@ -55,6 +55,22 @@ def _handle_error(e: str) -> None:
     sys.exit(1)
 
 
+def _check_repo_status():
+    out = _pipe_subprocess(["git", "status"])
+    print(out)
+    if "Changes not staged for commit" in out:
+        print("Pending changes found, committing")
+        _pipe_subprocess(["git", "add", "."])
+        _pipe_subprocess(["git", "commit",  "-m 'Update password.banana'"])
+        _pipe_subprocess(["git", "push"])
+    elif "Your branch is up to date with" in out:
+        print("No changes found")
+
+
+def _change_password():
+    pass
+
+
 def _take(needle: str, haystack: List[str]) -> str or None:
     for strand in haystack:
         if needle == strand:
@@ -142,9 +158,4 @@ def map_args():
 
 if __name__ == "__main__":
     # sys.exit(0 if map_args() else 1)
-    out = _pipe_subprocess(["git", "status"])
-    if "Changes not staged for commit" in out:
-        print("Pending changes found")
-
-    else:
-        print(out)
+    _check_repo_status()
