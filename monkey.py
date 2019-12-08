@@ -27,6 +27,12 @@ def parse_args() -> argparse.Namespace:
     )
 
 
+def _pipe_subprocess(cmd: List[str] or str):
+    proc = subprocess.check_output(cmd)
+
+    return str(proc)
+
+
 def _parse_url(url: str) -> str:
     contains_http_starter = url.startswith("https://")
     # Probably good if you have this
@@ -136,4 +142,9 @@ def map_args():
 
 if __name__ == "__main__":
     # sys.exit(0 if map_args() else 1)
-    subprocess.call(["git", "status"])
+    out = _pipe_subprocess(["git", "status"])
+    if "Changes not staged for commit" in out:
+        print("Pending changes found")
+
+    else:
+        print(out)
