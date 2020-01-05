@@ -1,0 +1,23 @@
+[package]
+name = "monkey"
+version = "1.0.0"
+authors = ["Jarred Parr <jparr721@gmail.com>"]
+edition = "2018"
+
+[build-dependencies]
+clap = "2.31.2"
+
+[dependencies]
+git2 = "0.10"
+ctrlc = "3.1"
+ansi_term = "0.12"
+lscolors = "0.6"
+dirs = "2.0.2"
+ignore = "0.4.3"
+toml = "0.5"
+serde = "1.0"
+serde_derive = "1.0"
+
+[dependencies.clap]
+version = "2.31.2"
+features = ["suggestions", "color", "wrap_help"]
