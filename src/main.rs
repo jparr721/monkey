@@ -10,7 +10,5 @@ use crate::internal::opts::MonkeyOptions;
 fn main() {
     let matches = app::build_app().get_matches();
 
-    if matches.is_present("init") {
-
-    }
+    if matches.is_present("init") {}
 }

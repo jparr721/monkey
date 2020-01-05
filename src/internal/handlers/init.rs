@@ -2,10 +2,10 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 
-use ansi_term::{Colour::*};
+use ansi_term::Colour::*;
 use toml::{map::Map, Value};
 
-use crate::internal::handlers::utils::{is_dir, exec_on_home, is_empty, git_clone, CloneArgs};
+use crate::internal::handlers::utils::{exec_on_home, git_clone, is_dir, is_empty, CloneArgs};
 
 pub fn init() -> bool {
     let dot_monkey: &Path = Path::new(".monkey");
@@ -16,7 +16,6 @@ pub fn init() -> bool {
     if dir_exists && !is_empty(base_path.as_path()) {
         return false;
     } else if dir_exists && is_empty(base_path.as_path()) {
-
     }
 
     true
@@ -32,7 +31,7 @@ fn scaffold(base_path: &Path) -> Result<bool, &'static str> {
 
     let repo_url = match buffer.trim_end() {
         "" => panic!(Red.paint("Error! No repo provided!")),
-        url => url
+        url => url,
     };
 
     println!("{}", Green.paint("Cloning github repository"));

@@ -25,7 +25,8 @@ macro_rules! doc {
 pub fn build_app() -> App<'static, 'static> {
     let helps = usage();
     let arg = |name| {
-        Arg::with_name(name).help(helps[name].short)
+        Arg::with_name(name)
+            .help(helps[name].short)
             .long_help(helps[name].long)
     };
 
@@ -43,58 +44,48 @@ pub fn build_app() -> App<'static, 'static> {
                 .long("see")
                 .short("S")
                 .takes_value(true)
-                .value_name("key")
+                .value_name("key"),
         )
         .arg(
             arg("all")
                 .help("List all passwords")
                 .conflicts_with("cp")
-                .requires("see")
+                .requires("see"),
         )
         .arg(
             arg("cp")
                 .help("Copy selected password to clipboard")
                 .conflicts_with("all")
-                .requires("see")
+                .requires("see"),
         )
-        .arg(
-            arg("init")
-                .long("init")
-                .short("I")
-                .overrides_with("init")
-        )
+        .arg(arg("init").long("init").short("I").overrides_with("init"))
         .arg(
             arg("add")
                 .long("add")
                 .short("A")
                 .takes_value(true)
                 .number_of_values(2)
-                .multiple(true)
+                .multiple(true),
         )
-        .arg(
-            arg("sync")
-                .long("sync")
-                .short("S")
-                .overrides_with("sync")
-        )
+        .arg(arg("sync").long("sync").short("S").overrides_with("sync"))
         .arg(
             arg("delete")
                 .long("delete")
                 .short("D")
                 .takes_value(true)
                 .number_of_values(1)
-                .value_name("key")
+                .value_name("key"),
         )
         .arg(
             arg("no-confirm")
                 .help("Brute-force delete the password by key")
-                .requires("delete")
+                .requires("delete"),
         )
         .arg(
             arg("forest-fire")
                 .long("forest-fire")
                 .short("F")
-                .overrides_with("forest-fire")
+                .overrides_with("forest-fire"),
         )
         .arg(
             arg("color")
@@ -102,10 +93,10 @@ pub fn build_app() -> App<'static, 'static> {
                 .short("c")
                 .takes_value(true)
                 .value_name("when")
-                .possible_values(&["never", "auto", "always"])
+                .possible_values(&["never", "auto", "always"]),
         );
 
-        app
+    app
 }
 
 #[rustfmt::skip]

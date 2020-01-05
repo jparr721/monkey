@@ -1,12 +1,12 @@
+use std::cell::RefCell;
 use std::env::current_dir;
 use std::fs;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
-use std::cell::RefCell;
 
+use dirs::home_dir;
 use git2::build::{CheckoutBuilder, RepoBuilder};
 use git2::{FetchOptions, Progress, RemoteCallbacks};
-use dirs::home_dir;
 
 pub fn path_absolute_form(path: &Path) -> io::Result<PathBuf> {
     if path.is_absolute() {
@@ -46,7 +46,7 @@ pub fn is_empty(path: &Path) -> bool {
             } else {
                 return false;
             }
-        },
+        }
         Err(e) => {
             panic!("{}", e);
         }
@@ -78,7 +78,7 @@ pub struct GitState {
 }
 
 fn print_git_state(state: &mut GitState) {
-     let stats = state.progress.as_ref().unwrap();
+    let stats = state.progress.as_ref().unwrap();
     let network_pct = (100 * stats.received_objects()) / stats.total_objects();
     let index_pct = (100 * stats.indexed_objects()) / stats.total_objects();
     let co_pct = if state.total > 0 {
