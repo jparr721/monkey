@@ -23,18 +23,29 @@ pub fn init() -> bool {
 
 fn scaffold(base_path: &Path) -> Result<bool, &'static str> {
     // Create config file
-    let base_config = Map::new();
+    let mut configs = Map::new();
 
     // Get the repo url
-    let mut buffer = String::new();
-    io::stdin().read_line(&mut buffer).unwrap();
+    print!("Please enter the full http git path: ");
+    let mut repo_url_buffer = String::new();
+    io::stdin().read_line(&mut repo_url_buffer).unwrap();
 
-    let repo_url = match buffer.trim_end() {
+    println!();
+    print!("Please enter the github repo name: ");
+    let mut repo_name_buffer = String::new();
+    io::stdin().read_line(&mut repo_name_buffer).unwrap();
+
+    let repo_url = match repo_url_buffer.trim_end() {
         "" => panic!(Red.paint("Error! No repo provided!")),
         url => url,
     };
 
-    println!("{}", Green.paint("Cloning github repository"));
+    let repo_name = match repo_name_buffer.trim_end() {
+        "" => panic!(Red.paint("Error! No repo name provided!")),
+        name => name,
+    };
+
+    println!("{}", Cyan.paint("Cloning github repository"));
     let clone_args = CloneArgs {
         url: repo_url.to_owned(),
         path: base_path.to_str().unwrap().to_owned(),
@@ -44,6 +55,10 @@ fn scaffold(base_path: &Path) -> Result<bool, &'static str> {
         Ok(()) => println!("{}", Green.paint("Cloned successfully")),
         Err(e) => panic!(e),
     }
+
+    configs.insert("clone_url".into(), Value::String(clone_args.url));
+    configs.insert("clone_path".into(), Value::String(clone_args.path));
+    configs.insert("repo_name".into(), Value::String(repo_name.into()));
 
     Ok(true)
 }
