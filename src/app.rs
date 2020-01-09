@@ -30,7 +30,7 @@ pub fn build_app() -> App<'static, 'static> {
             .long_help(helps[name].long)
     };
 
-    let mut app = App::new("monkey")
+    let app = App::new("monkey")
         .version(crate_version!())
         .usage("monkey [FLAGS/OPTIONS] [KEY] || [KEY-VALUE]")
         .setting(AppSettings::ColoredHelp)

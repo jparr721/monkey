@@ -5,10 +5,25 @@ mod app;
 
 use std::env;
 
-use crate::internal::opts::MonkeyOptions;
+use ansi_term::Colour::Red;
+
+use crate::internal::{
+    opts::MonkeyOptions,
+    handlers::init::init,
+};
 
 fn main() {
-    let matches = app::build_app().get_matches();
+    println!();
+    print!("AYYEEE WE MADE IT CUZ");
+    println!();
+    init();
+    // let matches = app::build_app().get_matches();
 
-    if matches.is_present("init") {}
+    // if matches.is_present("init") {
+    //     let succeeded = init();
+
+    //     if !succeeded {
+    //         panic!("{}", Red.paint("Initialization failed!"));
+    //     }
+    // }
 }

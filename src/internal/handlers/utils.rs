@@ -8,6 +8,13 @@ use dirs::home_dir;
 use git2::build::{CheckoutBuilder, RepoBuilder};
 use git2::{FetchOptions, Progress, RemoteCallbacks};
 
+macro_rules! print_error_and_exit {
+    ($($arg:tt)*) => {
+        print_error!($($arg)*);
+        ::std::process::exit(1);
+    };
+}
+
 pub fn path_absolute_form(path: &Path) -> io::Result<PathBuf> {
     if path.is_absolute() {
         return Ok(path.to_path_buf());
