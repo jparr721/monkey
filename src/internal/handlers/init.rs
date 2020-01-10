@@ -1,24 +1,20 @@
 use std::fs;
-use std::io;
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
 use ansi_term::Colour::*;
 use toml::{map::Map, Value};
 
 use crate::internal::handlers::utils::{
-    exec_on_home,
-    git_clone,
-    is_dir,
-    is_empty,
-    CloneArgs,
+    exec_on_home, git_clone, is_dir, is_empty, str_to_path_buf, CloneArgs,
 };
+use crate::{print_error, print_error_and_exit};
 
 pub fn init() -> bool {
     let dot_monkey: &Path = Path::new(".monkey");
     let base_path: PathBuf = exec_on_home(&dot_monkey).unwrap();
 
     let dir_exists = is_dir(base_path.as_path());
-    println!("Made it!");
 
     if dir_exists && !is_empty(base_path.as_path()) {
         return false;
@@ -50,13 +46,23 @@ fn scaffold(base_path: &PathBuf) -> Result<bool, &'static str> {
     let mut configs = Map::new();
 
     // Get the repo url
-    println!("Please enter the full http git path: ");
+    print!("Please enter the full http git path: ");
+    io::stdout().flush().unwrap();
+
     let mut repo_url_buffer = String::new();
     io::stdin().read_line(&mut repo_url_buffer).unwrap();
 
-    println!("Please enter the github repo name: ");
+    print!("Please enter the github repo name: ");
+    io::stdout().flush().unwrap();
+
     let mut repo_name_buffer = String::new();
     io::stdin().read_line(&mut repo_name_buffer).unwrap();
+
+    print!("Please enter your full ssh key path (default $HOME/.ssh/id_rsa): ");
+    io::stdout().flush().unwrap();
+
+    let mut ssh_key_path_buffer = String::new();
+    io::stdin().read_line(&mut ssh_key_path_buffer).unwrap();
 
     let repo_url = match repo_url_buffer.trim_end() {
         "" => panic!(Red.paint("Error! No repo provided!")),
@@ -68,10 +74,16 @@ fn scaffold(base_path: &PathBuf) -> Result<bool, &'static str> {
         name => name,
     };
 
+    let ssh_key_path = match ssh_key_path_buffer.trim_end() {
+        "" => exec_on_home(Path::new(".ssh/id_rsa")).unwrap(),
+        path => str_to_path_buf(path.to_owned()).unwrap(),
+    };
+
     println!("{}", Cyan.paint("Cloning github repository"));
     let clone_args = CloneArgs {
         url: repo_url.to_owned(),
         path: base_path.to_str().unwrap().to_owned(),
+        credentials: ssh_key_path.to_str().unwrap().to_owned(),
     };
 
     match git_clone(&clone_args) {
@@ -82,6 +94,10 @@ fn scaffold(base_path: &PathBuf) -> Result<bool, &'static str> {
     configs.insert("clone_url".into(), Value::String(clone_args.url));
     configs.insert("clone_path".into(), Value::String(clone_args.path));
     configs.insert("repo_name".into(), Value::String(repo_name.into()));
+    configs.insert(
+        "ssh_key_path".into(),
+        Value::String(ssh_key_path.as_path().to_str().unwrap().into()),
+    );
 
     let configs_value = Value::Table(configs);
 

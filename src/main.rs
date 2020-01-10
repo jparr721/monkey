@@ -7,23 +7,18 @@ use std::env;
 
 use ansi_term::Colour::Red;
 
-use crate::internal::{
-    opts::MonkeyOptions,
-    handlers::init::init,
-};
+use crate::internal::{handlers::init::init, opts::MonkeyOptions};
 
 fn main() {
-    println!();
-    print!("AYYEEE WE MADE IT CUZ");
-    println!();
-    init();
-    // let matches = app::build_app().get_matches();
+    let matches = app::build_app().get_matches();
 
-    // if matches.is_present("init") {
-    //     let succeeded = init();
+    if matches.is_present("init") {
+        let succeeded = init();
 
-    //     if !succeeded {
-    //         panic!("{}", Red.paint("Initialization failed!"));
-    //     }
-    // }
+        if !succeeded {
+            panic!("{}", Red.paint("Initialization failed!"));
+        }
+    }
+
+    println!("{}", Red.paint("No options selected"));
 }

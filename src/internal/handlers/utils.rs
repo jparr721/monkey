@@ -6,14 +6,7 @@ use std::path::{Path, PathBuf};
 
 use dirs::home_dir;
 use git2::build::{CheckoutBuilder, RepoBuilder};
-use git2::{FetchOptions, Progress, RemoteCallbacks};
-
-macro_rules! print_error_and_exit {
-    ($($arg:tt)*) => {
-        print_error!($($arg)*);
-        ::std::process::exit(1);
-    };
-}
+use git2::{Cred, FetchOptions, Progress, RemoteCallbacks};
 
 pub fn path_absolute_form(path: &Path) -> io::Result<PathBuf> {
     if path.is_absolute() {
@@ -71,9 +64,18 @@ pub fn exec_on_home(file: &Path) -> io::Result<PathBuf> {
     Ok(home_with_file)
 }
 
+pub fn str_to_path_buf(s: String) -> io::Result<PathBuf> {
+    let mut buf = PathBuf::new();
+
+    buf.push(s);
+
+    Ok(buf)
+}
+
 pub struct CloneArgs {
     pub url: String,
     pub path: String,
+    pub credentials: String,
 }
 
 pub struct GitState {
@@ -138,6 +140,11 @@ pub fn git_clone(args: &CloneArgs) -> Result<(), git2::Error> {
     });
 
     let mut cb = RemoteCallbacks::new();
+    cb.credentials(|_, _, _| {
+        let credentials = Cred::ssh_key("git", None, Path::new(&args.credentials), None)
+            .expect("Failed to load credentials");
+        Ok(credentials)
+    });
     cb.transfer_progress(|stats| {
         let mut state = state.borrow_mut();
         state.progress = Some(stats.to_owned());

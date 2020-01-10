@@ -67,7 +67,7 @@ pub fn build_app() -> App<'static, 'static> {
                 .number_of_values(2)
                 .multiple(true),
         )
-        .arg(arg("sync").long("sync").short("S").overrides_with("sync"))
+        .arg(arg("sync").long("sync").short("s").overrides_with("sync"))
         .arg(
             arg("delete")
                 .long("delete")
@@ -87,13 +87,15 @@ pub fn build_app() -> App<'static, 'static> {
                 .short("F")
                 .overrides_with("forest-fire"),
         )
+        .arg(arg("tutorial").long("tutorial").short("T"))
         .arg(
             arg("color")
                 .long("color")
                 .short("c")
                 .takes_value(true)
                 .value_name("when")
-                .possible_values(&["never", "auto", "always"]),
+                .possible_values(&["never", "auto", "always"])
+                .hide_possible_values(true),
         );
 
     app
@@ -115,6 +117,12 @@ fn usage() -> HashMap<&'static str, Help> {
     doc!(h, "add"
         , "Add a new password to your list"
         , "Adds a new password to your list in the form (Key, Value)");
+    doc!(h, "all"
+        , "See all encrypted passwords"
+        , "Use this to see all encrypted passwords (following input prompt) that are stores");
+    doc!(h, "cp"
+        , "Copy output of see command to clipboard"
+        , "Adds the output of the see command to your clipboard");
     doc!(h, "sync"
         , "Syncs your passwords with git"
         , "Sync your passwords with the upstream git instance in case you changed \
@@ -123,6 +131,9 @@ fn usage() -> HashMap<&'static str, Help> {
         , "Delete a password from your list"
         , "Deletes a password by key from the list, you can use --no-confirm to make \
             it delete without validation");
+    doc!(h, "no-confirm"
+        , "Deletes via key by brute force"
+        , "Removes the 'are you sure?' safeguard from a delete operation");
     doc!(h, "forest-fire"
         , "Deletes your entire monkey instance"
         , "Deleted your entire monkey instance irrecoverably, you will need to run 'init' \
@@ -133,5 +144,10 @@ fn usage() -> HashMap<&'static str, Help> {
              'auto':      show colors if the output goes to an interactive console (default)\n  \
              'never':     do not use colorized output\n  \
              'always':    always use colorized output");
+    doc!(h, "tutorial"
+        , "Run 'init' and then enter your git repo, then you can start adding passwords"
+        , "First, run 'init'.\n Then, you want to run 'monkey add 'key' 'password', which you can do \
+            multiple times if you want.\n Then, you can view with 'monkey see'");
+
     h
 }
