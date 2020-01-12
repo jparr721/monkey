@@ -17,6 +17,7 @@ ignore = "0.4.3"
 toml = "0.5"
 serde = "1.0"
 serde_derive = "1.0"
+openssl = "0.10.26"
 
 [dependencies.clap]
 version = "2.31.2"
