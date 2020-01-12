@@ -4,6 +4,7 @@ use std::fs;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
+use ansi_term::Colour::*;
 use dirs::home_dir;
 use git2::build::{CheckoutBuilder, RepoBuilder};
 use git2::{Cred, FetchOptions, Progress, RemoteCallbacks};
@@ -74,8 +75,9 @@ pub fn str_to_path_buf(s: String) -> io::Result<PathBuf> {
 
 pub struct CloneArgs {
     pub url: String,
-    pub path: String,
-    pub credentials: String,
+    pub base_path: String,
+    pub ssh_key_path: String,
+    pub repo_name: String,
 }
 
 pub struct GitState {
@@ -141,8 +143,8 @@ pub fn git_clone(args: &CloneArgs) -> Result<(), git2::Error> {
 
     let mut cb = RemoteCallbacks::new();
     cb.credentials(|_, _, _| {
-        let credentials = Cred::ssh_key("git", None, Path::new(&args.credentials), None)
-            .expect("Failed to load credentials");
+        let credentials =
+            auth_ssh_key(args.ssh_key_path.clone()).expect("Failed to get ssh passphrase");
         Ok(credentials)
     });
     cb.transfer_progress(|stats| {
@@ -161,13 +163,47 @@ pub fn git_clone(args: &CloneArgs) -> Result<(), git2::Error> {
         print_git_state(&mut *state);
     });
 
+    let clone_path: PathBuf = [&args.base_path, &args.repo_name].iter().collect();
+    println!("Cloning into: {}", clone_path.as_path().to_str().unwrap());
+
     let mut fo = FetchOptions::new();
     fo.remote_callbacks(cb);
     RepoBuilder::new()
         .fetch_options(fo)
-        .with_checkout(co)
-        .clone(&args.url, Path::new(&args.path))?;
+        // .with_checkout(co)
+        .clone(&args.url, clone_path.as_path())?;
+    println!("{}", Green.paint("Authentication succesful"));
     println!();
 
     Ok(())
+}
+
+fn auth_ssh_key(ssh_key_path: String) -> Result<Cred, &'static str> {
+    print!("Enter passphrase for key: ");
+    io::stdout().flush().unwrap();
+
+    let mut passphrase_buffer = String::new();
+    io::stdin().read_line(&mut passphrase_buffer).unwrap();
+
+    let passphrase = match passphrase_buffer.trim_end() {
+        "" => None,
+        phrase => Some(phrase),
+    };
+
+    let private_key_path: PathBuf = [ssh_key_path.clone(), "id_rsa".to_owned()].iter().collect();
+    let public_key_path: PathBuf = [ssh_key_path.clone(), "id_rsa.pub".to_owned()]
+        .iter()
+        .collect();
+
+    println!("{}", private_key_path.as_path().to_str().unwrap());
+
+    let cred = Cred::ssh_key(
+        "git",
+        Some(&public_key_path),
+        &private_key_path,
+        passphrase,
+    )
+    .unwrap();
+
+    Ok(cred)
 }

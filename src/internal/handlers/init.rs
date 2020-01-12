@@ -75,15 +75,16 @@ fn scaffold(base_path: &PathBuf) -> Result<bool, &'static str> {
     };
 
     let ssh_key_path = match ssh_key_path_buffer.trim_end() {
-        "" => exec_on_home(Path::new(".ssh/id_rsa")).unwrap(),
+        "" => exec_on_home(Path::new(".ssh")).unwrap(),
         path => str_to_path_buf(path.to_owned()).unwrap(),
     };
 
     println!("{}", Cyan.paint("Cloning github repository"));
     let clone_args = CloneArgs {
         url: repo_url.to_owned(),
-        path: base_path.to_str().unwrap().to_owned(),
-        credentials: ssh_key_path.to_str().unwrap().to_owned(),
+        base_path: base_path.to_str().unwrap().to_owned(),
+        ssh_key_path: ssh_key_path.to_str().unwrap().to_owned(),
+        repo_name: repo_name.to_owned(),
     };
 
     match git_clone(&clone_args) {
@@ -92,7 +93,7 @@ fn scaffold(base_path: &PathBuf) -> Result<bool, &'static str> {
     }
 
     configs.insert("clone_url".into(), Value::String(clone_args.url));
-    configs.insert("clone_path".into(), Value::String(clone_args.path));
+    configs.insert("clone_path".into(), Value::String(clone_args.base_path.clone()));
     configs.insert("repo_name".into(), Value::String(repo_name.into()));
     configs.insert(
         "ssh_key_path".into(),
@@ -100,10 +101,15 @@ fn scaffold(base_path: &PathBuf) -> Result<bool, &'static str> {
     );
 
     let configs_value = Value::Table(configs);
-
     let config_string = toml::to_string(&configs_value).expect("Could not encode TOML");
+    let config_path: PathBuf = [&clone_args.base_path, "monkey.toml"].iter().collect();
 
-    fs::write(base_path, config_string).expect("Could not write to file!");
+    fs::write(config_path, config_string).expect("Could not write to file!");
+
+    let password_storage_path: PathBuf = [&clone_args.base_path, "passwords.toml"].iter().collect();
+    fs::File::create(password_storage_path).expect("Failed to make password file");
+
+    println!("{}", Green.paint("All initialized!"));
 
     Ok(true)
 }
