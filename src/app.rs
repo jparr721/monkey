@@ -65,6 +65,7 @@ pub fn build_app() -> App<'static, 'static> {
                 .short("A")
                 .takes_value(true)
                 .number_of_values(2)
+                .min_values(2)
                 .multiple(true),
         )
         .arg(arg("sync").long("sync").short("s").overrides_with("sync"))

@@ -3,6 +3,7 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
 use ansi_term::Colour::*;
+use rpassword::read_password;
 use toml::{map::Map, Value};
 
 use crate::internal::handlers::utils::{
@@ -93,7 +94,10 @@ fn scaffold(base_path: &PathBuf) -> Result<bool, &'static str> {
     }
 
     configs.insert("clone_url".into(), Value::String(clone_args.url));
-    configs.insert("clone_path".into(), Value::String(clone_args.base_path.clone()));
+    configs.insert(
+        "clone_path".into(),
+        Value::String(clone_args.base_path.clone()),
+    );
     configs.insert("repo_name".into(), Value::String(repo_name.into()));
     configs.insert(
         "ssh_key_path".into(),

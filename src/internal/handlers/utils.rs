@@ -8,6 +8,22 @@ use ansi_term::Colour::*;
 use dirs::home_dir;
 use git2::build::{CheckoutBuilder, RepoBuilder};
 use git2::{Cred, FetchOptions, Progress, RemoteCallbacks};
+use rpassword;
+
+pub fn vec_to_string(vec: &Vec<u8>, delim: Option<char>) -> String {
+    let mut vec_string = String::new();
+    let delimeter = match delim {
+        Some(d) => d,
+        None => ',',
+    };
+
+    for value in vec {
+        vec_string.push(*value as char);
+        vec_string.push(delimeter);
+    }
+
+    vec_string
+}
 
 pub fn path_absolute_form(path: &Path) -> io::Result<PathBuf> {
     if path.is_absolute() {
@@ -182,10 +198,9 @@ fn auth_ssh_key(ssh_key_path: String) -> Result<Cred, &'static str> {
     print!("Enter passphrase for key: ");
     io::stdout().flush().unwrap();
 
-    let mut passphrase_buffer = String::new();
-    io::stdin().read_line(&mut passphrase_buffer).unwrap();
+    let passphrase_: String = rpassword::read_password().unwrap();
 
-    let passphrase = match passphrase_buffer.trim_end() {
+    let passphrase = match passphrase_.trim_end() {
         "" => None,
         phrase => Some(phrase),
     };
@@ -197,13 +212,7 @@ fn auth_ssh_key(ssh_key_path: String) -> Result<Cred, &'static str> {
 
     println!("{}", private_key_path.as_path().to_str().unwrap());
 
-    let cred = Cred::ssh_key(
-        "git",
-        Some(&public_key_path),
-        &private_key_path,
-        passphrase,
-    )
-    .unwrap();
+    let cred = Cred::ssh_key("git", Some(&public_key_path), &private_key_path, passphrase).unwrap();
 
     Ok(cred)
 }
