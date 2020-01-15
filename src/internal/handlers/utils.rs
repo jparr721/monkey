@@ -216,3 +216,15 @@ fn auth_ssh_key(ssh_key_path: String) -> Result<Cred, &'static str> {
 
     Ok(cred)
 }
+
+pub fn bytes_to_hex(bytes: &[u8]) -> String {
+    const CHARS: &[u8] = b"0123456789abcdef";
+    let mut v = Vec::with_capacity(bytes.len() * 2);
+
+    for &byte in bytes {
+        v.push(CHARS[(byte >> 4) as usize]);
+        v.push(CHARS[(byte & 0xf) as usize]);
+    }
+
+    unsafe { String::from_utf8_unchecked(v) }
+}
