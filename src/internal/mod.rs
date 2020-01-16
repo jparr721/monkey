@@ -1,5 +1,6 @@
 pub mod handlers;
 pub mod opts;
+pub mod crypto;
 
 #[macro_export]
 macro_rules! print_error {
