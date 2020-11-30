@@ -1,0 +1,107 @@
+{
+  "name": "monkey",
+  "version": "1.0.0",
+  "description": "Self-hosted password manager tool.",
+  "main": "",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.development.yml up",
+    "start": "ts-node --files -r tsconfig-paths/register src/main.ts",
+    "start:dev": "nodemon",
+    "start:prod": "docker-compose -f docker-compose.yml -f docker-compose.production.yml up",
+    "start:test": "NODE_ENV=test yarn start",
+    "test": "NODE_ENV=test jest",
+    "test:cov": "NODE_ENV=test jest --coverage",
+    "test:e2e-setup": "NODE_ENV=test yarn db:create",
+    "test:e2e": "NODE_ENV=test jest --config ./test/e2e/jest-e2e.json",
+    "typeorm": "ts-node --files -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/db/config.ts",
+    "db:create": "yarn ts-node ./src/script/db.ts",
+    "db:drop": "yarn ts-node ./src/script/db.ts drop",
+    "db:migrate": "yarn typeorm migration:run",
+    "db:undo": "yarn typeorm migration:revert",
+    "seed": "yarn ts-node src/script/seed/runner.ts",
+    "genmod": "yarn ts-node src/script/genmod.ts",
+    "lint": "yarn eslint 'src/**/*{.js,.ts}'",
+    "lint:fix": "yarn lint --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jparr721/monkey.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/jparr721/monkey/issues"
+  },
+  "homepage": "https://github.com/jparr721/monkey#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "celebrate": "^13.0.4",
+    "class-transformer": "^0.3.1",
+    "class-validator": "^0.12.2",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.2.0",
+    "helmet": "^4.2.0",
+    "morgan": "^1.10.0",
+    "node-rsa": "^1.1.1",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^5.0.0",
+    "tsconfig-paths": "^3.9.0",
+    "typeorm": "^0.2.29",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/compression": "^1.7.0",
+    "@types/cors": "^2.8.8",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.9",
+    "@types/express-handlebars": "^3.1.0",
+    "@types/helmet": "^4.0.0",
+    "@types/jest": "^26.0.15",
+    "@types/lodash": "^4.14.165",
+    "@types/morgan": "^1.9.2",
+    "@types/node": "^14.14.10",
+    "@types/node-rsa": "^1.0.0",
+    "@types/winston": "^2.4.4",
+    "@typescript-eslint/eslint-plugin": "^4.8.2",
+    "@typescript-eslint/parser": "^4.8.2",
+    "concurrently": "^5.3.0",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.1.2",
+    "wait-on": "^5.2.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  }
+}

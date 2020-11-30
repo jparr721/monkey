@@ -1,0 +1,17 @@
+FROM node:14.4.0
+
+ARG GITHUB_NPM_AUTH_TOKEN
+ENV GITHUB_NPM_AUTH_TOKEN=$GITHUB_NPM_AUTH_TOKEN
+
+ARG PORT
+ENV port=$PORT
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN yarn
+
+CMD [ "yarn", "start" ]
+
+EXPOSE ${port}
