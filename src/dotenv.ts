@@ -11,6 +11,8 @@ export enum DotenvVariable {
   DbHost = 'DB_HOST',
   BcryptSaltRounds = 'BCRYPT_SALT_ROUNDS',
   LogLevel = 'LOG_LEVEL',
+  CryptSigningKey = 'CRYPT_SIGNING_KEY',
+  CryptInitializationVector = 'CRYPT_INITIALIZATION_VECTOR',
 }
 
 export function dotenvValue(name: DotenvVariable, default_: string): string {

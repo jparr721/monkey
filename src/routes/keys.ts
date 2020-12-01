@@ -1,18 +1,20 @@
 import { celebrate } from 'celebrate';
 import { Router } from 'express';
+import { getConnection } from 'typeorm';
 
 import { get, getOne, create, update, del } from '../controllers/keys';
 import unroll from './unroll';
 import * as Validators from '../validators/keys';
 import KeysModel from '../models/keys';
 import logger from '../logger';
+import { Keys } from '../models/entities/keys';
 
 export default (): Router => {
   logger.info('Keys - GET,POST,PATCH,DELETE');
-  const model = KeysModel();
+  const model = new KeysModel(getConnection().getRepository(Keys));
   const KeysRouter = Router();
 
-  KeysRouter.get('/', unroll(get));
+  KeysRouter.get('/', unroll(get(model)));
   KeysRouter.get(
     '/:id',
     celebrate(Validators.getOneSchema),

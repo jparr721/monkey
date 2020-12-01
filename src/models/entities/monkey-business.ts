@@ -1,9 +1,9 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Column,
 } from 'typeorm';
 import { Expose } from 'class-transformer';
 import {
@@ -14,8 +14,8 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 
-@Entity({ name: 'keys' })
-export class Keys {
+@Entity({ name: 'monkey_business' })
+export class MonkeyBusiness {
   @Expose()
   @PrimaryGeneratedColumn('uuid')
   @IsUUID()
@@ -26,19 +26,7 @@ export class Keys {
   @IsString()
   @IsNotEmpty()
   @Column()
-  public key!: string;
-
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
-  @Column()
-  public username!: string;
-
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
-  @Column()
-  public provider!: string;
+  public biz!: string;
 
   @Expose()
   @IsDateString()

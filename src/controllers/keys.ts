@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
-import ModelController from '../models/controller';
+import KeysModel from '../models/keys';
 
-export const get = <T>(model: ModelController<T>) => async (
+export const get = (model: KeysModel) => async (
   _: Request,
   res: Response,
 ): Promise<void> => {
@@ -10,7 +10,7 @@ export const get = <T>(model: ModelController<T>) => async (
   res.status(200).json(data);
 };
 
-export const getOne = <T>(model: ModelController<T>) => async (
+export const getOne = (model: KeysModel) => async (
   req: Request,
   res: Response,
 ): Promise<void> => {
@@ -19,7 +19,7 @@ export const getOne = <T>(model: ModelController<T>) => async (
   res.status(200).json(data);
 };
 
-export const create = <T>(model: ModelController<T>) => async (
+export const create = (model: KeysModel) => async (
   req: Request,
   res: Response,
 ): Promise<void> => {
@@ -28,7 +28,7 @@ export const create = <T>(model: ModelController<T>) => async (
   res.status(200).json(data);
 };
 
-export const update = <T>(model: ModelController<T>) => async (
+export const update = (model: KeysModel) => async (
   req: Request,
   res: Response,
 ): Promise<void> => {
@@ -40,7 +40,7 @@ export const update = <T>(model: ModelController<T>) => async (
 };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const del = <T>(model: ModelController<T>) => async (
+export const del = (model: KeysModel) => async (
   req: Request,
   res: Response,
 ): Promise<void> => {
