@@ -13,6 +13,8 @@ export enum DotenvVariable {
   LogLevel = 'LOG_LEVEL',
   CryptSigningKey = 'CRYPT_SIGNING_KEY',
   CryptInitializationVector = 'CRYPT_INITIALIZATION_VECTOR',
+  JwtPublicKey = 'JWT_PUBLIC_KEY',
+  JwtPrivateKey = 'JWT_PRIVATE_KEY',
 }
 
 export function dotenvValue(name: DotenvVariable, default_: string): string {

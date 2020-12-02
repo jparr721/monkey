@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import { dotenvValue, DotenvVariable } from '../dotenv';
+import { dotenvValue, DotenvVariable } from '../../dotenv';
 
 export async function hashPassword(password: string): Promise<string> {
   const BcryptSaltRounds = Number(

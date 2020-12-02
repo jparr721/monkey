@@ -1,10 +1,9 @@
 import { Repository, getConnection } from 'typeorm';
-import crypto from 'crypto';
 
 import { MonkeyBusiness } from './entities/monkey-business';
 import { Keys } from './entities/keys';
-import { hashPassword, checkPassword } from '../crypto/passwords';
-import { encryptString, decryptString } from '../crypto/cipher';
+import { checkPassword } from '../lib/crypto/passwords';
+import { encryptString, decryptString } from '../lib/crypto/cipher';
 
 export default class KeysModel {
   private monkeyBusinessRepository: Repository<MonkeyBusiness> = getConnection().getRepository(
@@ -32,9 +31,7 @@ export default class KeysModel {
   /**
    * gets all passwords with root password
    */
-  public async get(monkeyBusiness: string): Promise<Keys[]> {
-    await this.verifyUserAuthentication(monkeyBusiness);
-
+  public async get(): Promise<Keys[]> {
     const keys = await this.repository.find();
 
     return keys.map((k) => ({ ...k, key: decryptString(JSON.parse(k.key)) }));

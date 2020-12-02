@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import { dotenvValue, DotenvVariable } from '../dotenv';
+import { dotenvValue, DotenvVariable } from '../../dotenv';
 
 export interface Hashed {
   iv: string;

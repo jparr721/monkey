@@ -23,6 +23,9 @@ import compression from 'compression';
 // template engine
 import exphbs from 'express-handlebars';
 
+// parse cookies from browser requests
+import cookieParser from 'cookie-parser';
+
 // db configs
 import config from './db/config';
 
@@ -39,6 +42,7 @@ import PublicRouter from './routes/public';
 // validation
 import { errors } from 'celebrate';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 function logFormat(tokens: any, req: Request, res: Response): string {
   const logObj = {
     app_name: `monkey`,
@@ -93,9 +97,10 @@ function initializeApp(): Express {
     () => compression(),
     () => helmet(),
     () => errors(),
+    () => cookieParser(),
   ].forEach((m) => app.use(m()));
 
-  app.use((err: any, req: Request, res: Response, _: NextFunction) => {
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     logger.error(err.message);
     if (!err.statusCode) err.statusCode = 500;
     res.status(err.statusCode).send(err.message);

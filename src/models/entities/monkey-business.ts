@@ -20,7 +20,7 @@ export class MonkeyBusiness {
   @PrimaryGeneratedColumn('uuid')
   @IsUUID()
   @IsOptional()
-  public id!: string;
+  public id?: string;
 
   @Expose()
   @IsString()
