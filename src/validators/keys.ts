@@ -8,7 +8,9 @@ export const getOneSchema = {
 
 export const createOneSchema = {
   [Segments.BODY]: Joi.object().keys({
-    key: Joi.string().length(1).required(),
+    username: Joi.string().required(),
+    key: Joi.string().required(),
+    provider: Joi.string().required(),
   }),
 };
 

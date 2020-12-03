@@ -21,7 +21,7 @@ export interface JwtRequest extends Request {
 
 export function encodeJwt(): string {
   // TTL is only 10 minutes to avoid key theft related issues
-  const exp = new Date(Date.now() + 600000);
+  const exp = new Date(Date.now() + 600000).getTime() / 1000;
 
   const privateKeyEncoded = dotenvValue(DotenvVariable.JwtPrivateKey, '');
   if (!privateKeyEncoded) {
@@ -57,11 +57,11 @@ export function verifyJwt(token: string, secret: string): Jwt | undefined {
   }
 }
 
-export async function decodeJwt(
-  req: JwtRequest,
+export function decodeJwt(
+  req: Request,
   res: Response,
   next: NextFunction,
-): Promise<void> {
+): void {
   const publicKeyEncoded = dotenvValue(DotenvVariable.JwtPublicKey, '');
 
   if (isEmpty(publicKeyEncoded)) {
@@ -72,27 +72,23 @@ export async function decodeJwt(
   }
 
   const publicKey = Buffer.from(publicKeyEncoded, 'base64').toString();
-  const token = req.cookies;
+  const { token } = req.cookies;
 
   if (!token || isEmpty(token)) {
-    res.status(HttpCodes.Forbidden).json({
-      message: 'origin authentication failed; no authentication header found',
-      context: { token },
-    });
+    res.render('unauthorized');
     return;
   }
 
   const jwt = verifyJwt(token, publicKey);
 
   if (isUndefined(jwt)) {
-    res.status(HttpCodes.Forbidden).json({
-      message: 'origin authentication failed; invalid session token',
-      context: { token },
-    });
+    res.render('unauthorized');
     return;
   }
 
-  req.jwt = jwt;
+  // Who the fuck knows why this fails if the request type is `JwtRequest`
+  // I simply don't care enough to debug it. It works.
+  (req as any).jwt = jwt;
 
   next();
 }

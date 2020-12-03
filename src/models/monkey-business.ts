@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import omit from 'lodash/omit';
 
 import { hashPassword, checkPassword } from '../lib/crypto/passwords';
@@ -6,7 +6,10 @@ import { MonkeyBusiness } from './entities/monkey-business';
 import { encodeJwt } from '../lib/tokens/tokens';
 
 export default class MonkeyBusinessModel {
-  constructor(private readonly repository: Repository<MonkeyBusiness>) {}
+  private repository: Repository<MonkeyBusiness>;
+  constructor() {
+    this.repository = getConnection().getRepository(MonkeyBusiness);
+  }
 
   /**
    * gets one password
@@ -25,10 +28,10 @@ export default class MonkeyBusinessModel {
     const monkeyBusiness = await this.get();
 
     if (!monkeyBusiness) {
-      return undefined;
+      return this.createOne(password);
     }
 
-    if (!checkPassword(password, monkeyBusiness.biz)) {
+    if (!(await checkPassword(password, monkeyBusiness.biz))) {
       return '';
     }
 

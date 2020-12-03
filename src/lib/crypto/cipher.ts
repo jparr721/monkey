@@ -15,7 +15,8 @@ const cryptInitializationVector = dotenvValue(
 );
 
 function initializationVectorIsHex(iv: string): boolean {
-  return parseInt(iv, 16).toString() === iv;
+  const regexp = /^[0-9a-fA-F]+$/;
+  return regexp.test(iv);
 }
 
 export function encryptString(password: string): string {

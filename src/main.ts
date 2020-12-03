@@ -38,6 +38,7 @@ import './dotenv';
 // router imports
 import KeysRouter from './routes/keys';
 import PublicRouter from './routes/public';
+import AuthRouter from './routes/auth';
 
 // validation
 import { errors } from 'celebrate';
@@ -67,8 +68,9 @@ function logFormat(tokens: any, req: Request, res: Response): string {
 }
 
 function makeRouter(app: Express): Express {
-  app.use('/keys', KeysRouter());
   app.use('/', PublicRouter());
+  app.use('/keys', KeysRouter());
+  app.use('/auth', AuthRouter());
   return app;
 }
 
@@ -92,7 +94,7 @@ function initializeApp(): Express {
 
   [
     () => bodyParser.json(),
-    () => bodyParser.urlencoded({ extended: false, limit: '5mb' }),
+    () => bodyParser.urlencoded({ extended: false }),
     () => morgan(logFormat),
     () => compression(),
     () => helmet(),
