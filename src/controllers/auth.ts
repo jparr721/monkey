@@ -18,7 +18,10 @@ export const create = (model: MonkeyBusinessModel) => async (
   const token = await model.createOne(body.password);
   const passwords = await getCurrentPasswordList();
   res
-    .cookie('token', token, { expires: new Date(Date.now() + 600000) })
+    .cookie('token', token, {
+      expires: new Date(Date.now() + 600000),
+      httpOnly: true,
+    })
     .render('passwords', { passwords });
 };
 
@@ -29,7 +32,10 @@ export const update = (model: MonkeyBusinessModel) => async (
   const { body } = req;
   const token = await model.updateOne(body.password, body.newPassword);
   res
-    .cookie('token', token, { expires: new Date(Date.now() + 600000) })
+    .cookie('token', token, {
+      expires: new Date(Date.now() + 600000),
+      httpOnly: true,
+    })
     .redirect('back');
 };
 
@@ -47,6 +53,9 @@ export const login = (model: MonkeyBusinessModel) => async (
   }
   const passwords = await getCurrentPasswordList();
   res
-    .cookie('token', token, { expires: new Date(Date.now() + 600000) })
+    .cookie('token', token, {
+      expires: new Date(Date.now() + 600000),
+      httpOnly: true,
+    })
     .render('passwords', { passwords });
 };
