@@ -98,10 +98,7 @@ function initializeApp(): Express {
     () => bodyParser.urlencoded({ extended: false }),
     () => morgan(logFormat),
     () => compression(),
-    () =>
-      helmet({
-        hsts: false,
-      }),
+    () => helmet(),
     () => errors(),
     () => cookieParser(),
   ].forEach((m) => app.use(m()));

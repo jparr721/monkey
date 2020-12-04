@@ -34,7 +34,6 @@ export const update = (model: MonkeyBusinessModel) => async (
   res
     .cookie('token', token, {
       expires: new Date(Date.now() + 600000),
-      httpOnly: true,
     })
     .redirect('back');
 };
@@ -55,7 +54,6 @@ export const login = (model: MonkeyBusinessModel) => async (
   res
     .cookie('token', token, {
       expires: new Date(Date.now() + 600000),
-      httpOnly: true,
     })
     .render('passwords', { passwords });
 };
