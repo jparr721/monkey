@@ -42,6 +42,7 @@ import AuthRouter from './routes/auth';
 
 // validation
 import { errors } from 'celebrate';
+import { decodeJwt } from './lib/tokens/tokens';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function logFormat(tokens: any, req: Request, res: Response): string {
@@ -69,7 +70,7 @@ function logFormat(tokens: any, req: Request, res: Response): string {
 
 function makeRouter(app: Express): Express {
   app.use('/', PublicRouter());
-  app.use('/keys', KeysRouter());
+  app.use('/keys', decodeJwt, KeysRouter());
   app.use('/auth', AuthRouter());
   return app;
 }

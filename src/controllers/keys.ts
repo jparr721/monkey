@@ -25,8 +25,9 @@ export const create = (model: KeysModel) => async (
   res: Response,
 ): Promise<void> => {
   const { body } = req;
-  const data = await model.createOne(body);
-  res.status(HttpCodes.Ok).json(data);
+  await model.createOne(body);
+  const passwords = await model.get();
+  res.render('passwords', { passwords });
 };
 
 export const update = (model: KeysModel) => async (
@@ -45,7 +46,8 @@ export const del = (model: KeysModel) => async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  const { id } = req.params;
-  const data = await model.deleteOne({ id } as any);
-  res.status(HttpCodes.Ok).json(data);
+  const { id } = req.body;
+  await model.deleteOne({ id } as any);
+  const passwords = await model.get();
+  res.render('passwords', { passwords });
 };
