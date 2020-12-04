@@ -100,7 +100,7 @@ function initializeApp(): Express {
     () => compression(),
     () =>
       helmet({
-        contentSecurityPolicy: false,
+        hsts: false,
       }),
     () => errors(),
     () => cookieParser(),

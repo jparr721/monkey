@@ -11,10 +11,8 @@ services:
       - .env
     ports:
       - 3000:3000
-    volumes:
-      - server:/usr/src/app/monkey_production
     environment:
       NODE_ENV: production
 
 volumes:
-  server:
+  core:
