@@ -54,7 +54,7 @@
     "pm2": "^4.5.0",
     "reflect-metadata": "^0.1.13",
     "serve-favicon": "^2.5.0",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "^5.0.3",
     "tsconfig-paths": "^3.9.0",
     "typeorm": "^0.2.29",
     "winston": "^3.3.3"
