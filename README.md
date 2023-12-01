@@ -34,4 +34,3 @@ That's it.
 It's _highly_ encouraged that you back your sqlite database and .env to some cloud repo like git.
 
 --
-Paid services are trash, data wants to be free.
